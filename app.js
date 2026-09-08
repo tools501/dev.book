@@ -29,6 +29,7 @@ const DEFAULT_DVGZ_LABELS = {
   mergedTitle: 'Summary',
   loading: 'Loading...',
   empty: 'No data',
+  emptyFilter: 'No data',
   error: 'Load error',
   orderNumber: 'Number',
   dates: 'Dates',
@@ -1027,17 +1028,13 @@ function getDvgzMergedGroups(dvgz, filter) {
 
 function renderDvgzPaymentRows(payments) {
   if (!payments.length) {
-    return `
-      <div class="orders-empty">
-        ${escapeHtml(getDvgzLabel('empty'))}
-      </div>
-    `;
+    return '';
   }
 
   return payments.map(payment => `
     <div class="dvgz-row-card">
       <div class="dvgz-row-main">
-        <span>
+        <span class="dvgz-order-title">
           ${escapeHtml(getDvgzLabel('orderNumber'))}:
           ${escapeHtml(payment.orderNumber || '—')}
         </span>
@@ -1061,11 +1058,7 @@ function renderDvgzPaymentRows(payments) {
 
 function renderDvgzMergedGroups(groups) {
   if (!groups.length) {
-    return `
-      <div class="orders-empty">
-        ${escapeHtml(getDvgzLabel('empty'))}
-      </div>
-    `;
+    return '';
   }
 
   return groups.map(group => `
@@ -1085,12 +1078,19 @@ function renderDvgzMergedGroups(groups) {
   `).join('');
 }
 
+function renderDvgzEmpty(message) {
+  return `
+    <div class="dvgz-empty-state">
+      <span class="dvgz-empty-icon">⊹</span>
+      <span>${escapeHtml(message)}</span>
+    </div>
+  `;
+}
+
 function renderDvgzHTML(dvgz, filter = 'all') {
   if (!dvgz?.found) {
     return `
-      <div class="orders-empty">
-        ◈ ${escapeHtml(getDvgzLabel('empty'))}
-      </div>
+      ${renderDvgzEmpty(getDvgzLabel('empty'))}
     `;
   }
 
@@ -1106,6 +1106,8 @@ function renderDvgzHTML(dvgz, filter = 'all') {
       String(payment?.type || '') === paymentType
     );
   const mergedGroups = getDvgzMergedGroups(dvgz, filter);
+  const hasFilteredData =
+    filteredPayments.length > 0 || mergedGroups.length > 0;
 
   return `
     <div class="dvgz-block">
@@ -1128,24 +1130,42 @@ function renderDvgzHTML(dvgz, filter = 'all') {
         </label>
       </div>
 
-      <div class="dvgz-section">
-        <div class="dvgz-section-title">
-          ${escapeHtml(getDvgzLabel('paymentsTitle'))}
-          <span>${filteredPayments.length}</span>
-        </div>
-        <div class="dvgz-list">
-          ${renderDvgzPaymentRows(filteredPayments)}
-        </div>
-      </div>
+      ${
+        hasFilteredData
+          ? `
+            ${
+              filteredPayments.length
+                ? `
+                  <div class="dvgz-section">
+                    <div class="dvgz-section-title">
+                      ${escapeHtml(getDvgzLabel('paymentsTitle'))}
+                      <span>${filteredPayments.length}</span>
+                    </div>
+                    <div class="dvgz-list">
+                      ${renderDvgzPaymentRows(filteredPayments)}
+                    </div>
+                  </div>
+                `
+                : ''
+            }
 
-      <div class="dvgz-section">
-        <div class="dvgz-section-title">
-          ${escapeHtml(getDvgzLabel('mergedTitle'))}
-        </div>
-        <div class="dvgz-list">
-          ${renderDvgzMergedGroups(mergedGroups)}
-        </div>
-      </div>
+            ${
+              mergedGroups.length
+                ? `
+                  <div class="dvgz-section">
+                    <div class="dvgz-section-title">
+                      ${escapeHtml(getDvgzLabel('mergedTitle'))}
+                    </div>
+                    <div class="dvgz-list">
+                      ${renderDvgzMergedGroups(mergedGroups)}
+                    </div>
+                  </div>
+                `
+                : ''
+            }
+          `
+          : renderDvgzEmpty(getDvgzLabel('emptyFilter'))
+      }
     </div>
   `;
 }
