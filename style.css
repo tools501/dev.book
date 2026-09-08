@@ -1393,8 +1393,35 @@ html.dark .order-card:hover{
   outline:none;
 }
 
-.dvgz-section{
+.dvgz-empty-state{
+  display:flex;
+  align-items:center;
+  gap:10px;
   margin-top:12px;
+  padding:14px 16px;
+  border-radius:12px;
+  border:1px dashed rgba(148,163,184,.28);
+  background:rgba(255,255,255,.025);
+  color:var(--text-soft);
+  font-size:13px;
+  font-weight:600;
+}
+
+.dvgz-empty-icon{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:24px;
+  height:24px;
+  border-radius:50%;
+  background:rgba(255,107,0,.10);
+  color:#ff8a2a;
+  font-size:16px;
+  flex-shrink:0;
+}
+
+.dvgz-section{
+  margin-top:14px;
 }
 
 .dvgz-section-title{
@@ -1416,12 +1443,12 @@ html.dark .order-card:hover{
 .dvgz-list{
   display:flex;
   flex-direction:column;
-  gap:10px;
+  gap:8px;
 }
 
 .dvgz-row-card,
 .dvgz-merged-card{
-  padding:12px 14px;
+  padding:11px 13px;
   border-radius:12px;
   border:1px solid var(--border);
   background:rgba(255,255,255,.03);
@@ -1437,16 +1464,24 @@ html.dark .order-card:hover{
 }
 
 .dvgz-row-main{
+  align-items:center;
   font-size:13px;
   font-weight:700;
   color:var(--text);
-  margin-bottom:7px;
+  margin-bottom:8px;
 }
 
 .dvgz-row-meta{
+  display:grid;
+  grid-template-columns:minmax(0, 1fr) auto;
   font-size:12px;
   line-height:1.45;
   color:var(--text-soft);
+}
+
+.dvgz-order-title{
+  min-width:0;
+  overflow-wrap:anywhere;
 }
 
 .dvgz-type{
@@ -1473,6 +1508,7 @@ html.dark .order-card:hover{
 }
 
 .dvgz-merged-row{
+  align-items:center;
   padding-top:7px;
   border-top:1px solid rgba(148,163,184,.16);
   font-size:12px;
@@ -1494,6 +1530,11 @@ html.dark .dvgz-row-card,
 html.dark .dvgz-merged-card{
   background:rgba(255,255,255,.025);
   border:1px solid rgba(255,255,255,.06);
+}
+
+html.dark .dvgz-empty-state{
+  background:rgba(255,255,255,.025);
+  border-color:rgba(255,255,255,.09);
 }
 
 @media (max-width:768px){
@@ -1518,15 +1559,17 @@ html.dark .dvgz-merged-card{
     width:100%;
   }
 
-  .dvgz-row-main,
-  .dvgz-row-meta,
-  .dvgz-merged-row{
-    flex-direction:column;
+  .dvgz-row-main{
+    gap:8px;
+  }
+
+  .dvgz-row-meta{
+    grid-template-columns:1fr;
     gap:5px;
   }
 
   .dvgz-type{
-    align-self:flex-start;
+    align-self:center;
   }
 }
 
