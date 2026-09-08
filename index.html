@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+  
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="icon" type="image/png" id="favicon">
+
+  <script>
+    if (localStorage.getItem('theme') === 'dark') {
+      document.documentElement.classList.add('dark');
+    }
+  </script>
+
+  <link rel="stylesheet" href="style.css">
+
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+
+<body>
+
+<div id="loader" style="display:none;">
+  <div class="modern-loader"></div>
+  <div class="loader-text" id="loaderText">
+    Завантаження даних...
+  </div>
+</div>
+
+<div id="error" style="
+  display:none;
+  padding:40px;
+  text-align:center;
+  font-family:Arial;
+">
+  <h2 id="errorTitle"></h2>
+  <div id="errorText" style="
+    margin-top:10px;
+    color:#666;
+    font-size:14px;
+  "></div>
+</div>
+
+<button id="scrollTopBtn" class="scroll-top">↑</button>
+
+<div id="loginPage">
+  <div class="login-card">
+
+    <div class="login-title">
+      Увійдіть для продовження
+    </div>
+
+    <div id="g_id_onload"
+         data-client_id="758097653129-i5cda00k5b73uudvmmalj2jdvk70t5jr.apps.googleusercontent.com"
+         data-callback="handleCredentialResponse"
+         data-auto_prompt="false"
+         data-ux_mode="popup">
+    </div>
+
+    <div class="login-google-wrap">
+      <div class="g_id_signin"
+           data-type="standard"
+           data-size="large"
+           data-theme="outline"
+           data-shape="pill"
+           data-text="continue_with"
+           data-width="250">
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div id="twoFactorPage" class="two-factor-page" style="display:none;">
+  <div class="two-factor-card">
+    <div class="two-factor-title">
+      Підтвердження 2FA
+    </div>
+
+    <input
+      id="twoFactorCode"
+      class="two-factor-code"
+      type="text"
+      inputmode="numeric"
+      autocomplete="one-time-code"
+      maxlength="6"
+      placeholder="000000"
+    >
+
+    <div class="two-factor-actions">
+      <button
+        id="twoFactorSubmitBtn"
+        class="two-factor-submit"
+        type="button"
+      >
+        Підтвердити
+      </button>
+
+      <button
+        id="twoFactorCancelBtn"
+        class="two-factor-cancel"
+        type="button"
+      >
+        Скасувати
+      </button>
+    </div>
+  </div>
+</div>
+
+<div id="app" style="display:none;">
+  
+  <div class="app-shell">
+
+<div id="dashboard">
+  
+  <button id="hubBtn" class="hub-btn" type="button" title="Перейти до Hub">
+    Hub
+  </button>
+
+  <button id="themeToggle" class="theme-toggle" title="Змінити тему">
+    🌙
+  </button>
+  
+  <div class="dashboard-title"></div>
+
+  <div class="dashboard-row">
+
+    <!-- 1. ГРАФІК -->
+    <div class="dashboard-item">
+      <div class="dash-card" style="text-align:center;">
+        
+        <div id="chart" style="
+          width:120px;
+          height:120px;
+          border-radius:50%;
+          position:relative;
+          margin:0 auto;
+        ">
+          <div id="chart-center" style="
+            position:absolute;
+            top:50%;
+            left:50%;
+            transform:translate(-50%, -50%);
+            text-align:center;
+            font-size:12px;
+            font-weight:bold;
+          ">
+            <div id="total-count">0</div>
+            <div style="font-size:10px; font-weight:normal;">
+              <span style="color:green;" id="shps-count"></span> /
+              <span style="color:orange;" id="rozp-count"></span>
+            </div>
+          </div>
+        </div>
+
+        <div style="
+            margin-top:6px;
+            font-size:12px;
+            color:#555;
+            display:flex;
+            flex-direction:column;
+            gap:0;
+            align-items:center;
+          ">
+          <span style="color:green;">● <span id="label-A1"></span></span>
+          <span style="color:orange;">● <span id="label-B2"></span></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. MARKS -->
+    <div class="dashboard-item">
+      <div class="dash-card">
+        <div id="marksChart" style="width:100%; margin:0 auto;"></div>
+      </div>
+    </div>
+
+    <!-- 3. ДН -->
+    <div class="dashboard-item">
+      <div id="birthdaysBlock"></div>
+    </div>
+  </div>
+</div>
+
+<div class="search-wrapper">
+  <input type="text" id="search" placeholder="Пошук...">
+  <span id="clearSearch">✖</span>
+</div>
+
+<div id="searchCount"></div>
+
+<div id="list"></div>
+  </div>
+</div>
+
+<!-- SESSION MODAL -->
+<div id="sessionModal" class="session-modal">
+  <div class="session-modal-content">
+
+    <div class="session-title">
+      ⏳ Сесія завершилась
+    </div>
+
+    <div class="session-text">
+      Продовжити роботу<br>
+      з поточними даними?
+    </div>
+
+    <div class="session-actions">
+      <button class="session-btn cancel">
+        Продовжити
+      </button>
+
+      <button class="session-btn confirm">
+        Оновити
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
