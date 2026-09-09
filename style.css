@@ -1527,6 +1527,44 @@ html:not(.dark) .dvgz-scroll:hover::-webkit-scrollbar-thumb{
   font-weight:800;
 }
 
+.dvgz-order-duplicate{
+  display:inline-flex;
+  align-items:center;
+  border-radius:999px;
+  padding:2px 8px;
+  border:1px solid transparent;
+}
+
+.dvgz-order-color-1{
+  background:rgba(255,107,0,.10);
+  border-color:rgba(255,107,0,.24);
+}
+
+.dvgz-order-color-2{
+  background:rgba(96,165,250,.10);
+  border-color:rgba(96,165,250,.24);
+}
+
+.dvgz-order-color-3{
+  background:rgba(34,197,94,.09);
+  border-color:rgba(34,197,94,.22);
+}
+
+.dvgz-order-color-4{
+  background:rgba(168,85,247,.10);
+  border-color:rgba(168,85,247,.24);
+}
+
+.dvgz-order-color-5{
+  background:rgba(236,72,153,.09);
+  border-color:rgba(236,72,153,.22);
+}
+
+.dvgz-order-color-6{
+  background:rgba(20,184,166,.10);
+  border-color:rgba(20,184,166,.24);
+}
+
 .dvgz-meta-value,
 .dvgz-merged-period{
   color:var(--text);
