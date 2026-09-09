@@ -1516,6 +1516,23 @@ html:not(.dark) .dvgz-scroll:hover::-webkit-scrollbar-thumb{
   overflow-wrap:anywhere;
 }
 
+.dvgz-label{
+  color:var(--text-soft);
+  font-weight:600;
+  opacity:.78;
+}
+
+.dvgz-main-value{
+  color:var(--text);
+  font-weight:800;
+}
+
+.dvgz-meta-value,
+.dvgz-merged-period{
+  color:var(--text);
+  font-weight:700;
+}
+
 .dvgz-type{
   flex-shrink:0;
   padding:2px 8px;
