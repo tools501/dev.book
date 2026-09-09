@@ -1130,42 +1130,44 @@ function renderDvgzHTML(dvgz, filter = 'all') {
         </label>
       </div>
 
-      ${
-        hasFilteredData
-          ? `
-            ${
-              filteredPayments.length
-                ? `
-                  <div class="dvgz-section">
-                    <div class="dvgz-section-title">
-                      ${escapeHtml(getDvgzLabel('paymentsTitle'))}
-                      <span>${filteredPayments.length}</span>
+      <div class="dvgz-scroll">
+        ${
+          hasFilteredData
+            ? `
+              ${
+                filteredPayments.length
+                  ? `
+                    <div class="dvgz-section">
+                      <div class="dvgz-section-title">
+                        ${escapeHtml(getDvgzLabel('paymentsTitle'))}
+                        <span>${filteredPayments.length}</span>
+                      </div>
+                      <div class="dvgz-list">
+                        ${renderDvgzPaymentRows(filteredPayments)}
+                      </div>
                     </div>
-                    <div class="dvgz-list">
-                      ${renderDvgzPaymentRows(filteredPayments)}
-                    </div>
-                  </div>
-                `
-                : ''
-            }
+                  `
+                  : ''
+              }
 
-            ${
-              mergedGroups.length
-                ? `
-                  <div class="dvgz-section">
-                    <div class="dvgz-section-title">
-                      ${escapeHtml(getDvgzLabel('mergedTitle'))}
+              ${
+                mergedGroups.length
+                  ? `
+                    <div class="dvgz-section">
+                      <div class="dvgz-section-title">
+                        ${escapeHtml(getDvgzLabel('mergedTitle'))}
+                      </div>
+                      <div class="dvgz-list">
+                        ${renderDvgzMergedGroups(mergedGroups)}
+                      </div>
                     </div>
-                    <div class="dvgz-list">
-                      ${renderDvgzMergedGroups(mergedGroups)}
-                    </div>
-                  </div>
-                `
-                : ''
-            }
-          `
-          : renderDvgzEmpty(getDvgzLabel('emptyFilter'))
-      }
+                  `
+                  : ''
+              }
+            `
+            : renderDvgzEmpty(getDvgzLabel('emptyFilter'))
+        }
+      </div>
     </div>
   `;
 }
