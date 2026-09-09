@@ -1035,8 +1035,12 @@ function renderDvgzPaymentRows(payments) {
     <div class="dvgz-row-card">
       <div class="dvgz-row-main">
         <span class="dvgz-order-title">
-          ${escapeHtml(getDvgzLabel('orderNumber'))}:
-          ${escapeHtml(payment.orderNumber || '—')}
+          <span class="dvgz-label">
+            ${escapeHtml(getDvgzLabel('orderNumber'))}:
+          </span>
+          <span class="dvgz-main-value">
+            ${escapeHtml(payment.orderNumber || '—')}
+          </span>
         </span>
         <span class="dvgz-type">
           ${escapeHtml(payment.type || '—')}
@@ -1044,12 +1048,20 @@ function renderDvgzPaymentRows(payments) {
       </div>
       <div class="dvgz-row-meta">
         <span>
-          ${escapeHtml(getDvgzLabel('dates'))}:
-          ${escapeHtml(payment.dates || '—')}
+          <span class="dvgz-label">
+            ${escapeHtml(getDvgzLabel('dates'))}:
+          </span>
+          <span class="dvgz-meta-value">
+            ${escapeHtml(payment.dates || '—')}
+          </span>
         </span>
         <span>
-          ${escapeHtml(getDvgzLabel('count'))}:
-          ${escapeHtml(payment.count || '—')}
+          <span class="dvgz-label">
+            ${escapeHtml(getDvgzLabel('count'))}:
+          </span>
+          <span class="dvgz-meta-value">
+            ${escapeHtml(payment.count || '—')}
+          </span>
         </span>
       </div>
     </div>
@@ -1069,7 +1081,9 @@ function renderDvgzMergedGroups(groups) {
       <div class="dvgz-merged-list">
         ${(group.rows || []).map(row => `
           <div class="dvgz-merged-row">
-            <span>${escapeHtml(row.period || '—')}</span>
+            <span class="dvgz-merged-period">
+              ${escapeHtml(row.period || '—')}
+            </span>
             <strong>${escapeHtml(row.days || '—')}</strong>
           </div>
         `).join('')}
