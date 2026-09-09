@@ -1031,14 +1031,40 @@ function renderDvgzPaymentRows(payments) {
     return '';
   }
 
-  return payments.map(payment => `
+  const orderCounts = payments.reduce((acc, payment) => {
+    const key = String(payment?.orderNumber || '').trim();
+
+    if (key) {
+      acc[key] = (acc[key] || 0) + 1;
+    }
+
+    return acc;
+  }, {});
+
+  const duplicateOrderKeys = Object.keys(orderCounts)
+    .filter(key => orderCounts[key] > 1);
+
+  const duplicateOrderClassByKey =
+    duplicateOrderKeys.reduce((acc, key, index) => {
+      acc[key] = `dvgz-order-color-${(index % 6) + 1}`;
+
+      return acc;
+    }, {});
+
+  return payments.map(payment => {
+    const orderKey = String(payment?.orderNumber || '').trim();
+    const duplicateOrderClass = duplicateOrderClassByKey[orderKey]
+      ? `dvgz-order-duplicate ${duplicateOrderClassByKey[orderKey]}`
+      : '';
+
+    return `
     <div class="dvgz-row-card">
       <div class="dvgz-row-main">
         <span class="dvgz-order-title">
           <span class="dvgz-label">
             ${escapeHtml(getDvgzLabel('orderNumber'))}:
           </span>
-          <span class="dvgz-main-value">
+          <span class="dvgz-main-value ${duplicateOrderClass}">
             ${escapeHtml(payment.orderNumber || '—')}
           </span>
         </span>
@@ -1065,7 +1091,8 @@ function renderDvgzPaymentRows(payments) {
         </span>
       </div>
     </div>
-  `).join('');
+  `;
+  }).join('');
 }
 
 function renderDvgzMergedGroups(groups) {
