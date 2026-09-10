@@ -1008,6 +1008,23 @@ function hasDvgzOrderNumber(value) {
   );
 }
 
+function getDvgzPaymentTypeOption(type) {
+  const normalizedType = String(type || '').trim();
+
+  return getDvgzTypeOptions().find(option =>
+    String(option.paymentType || '').trim() === normalizedType
+  );
+}
+
+function getDvgzPaymentTypeClass(type) {
+  const colorKey =
+    getDvgzPaymentTypeOption(type)?.colorKey;
+
+  return colorKey
+    ? `dvgz-type-color-${colorKey}`
+    : '';
+}
+
 function isDvgzAllFilter(filter) {
   const selectedOption = getDvgzTypeOption(filter);
 
@@ -1062,6 +1079,8 @@ function renderDvgzPaymentRows(payments) {
     const duplicateOrderClass = duplicateOrderClassByKey[orderKey]
       ? `dvgz-order-duplicate ${duplicateOrderClassByKey[orderKey]}`
       : '';
+    const paymentTypeClass =
+      getDvgzPaymentTypeClass(payment?.type);
 
     return `
     <div class="dvgz-row-card">
@@ -1074,7 +1093,7 @@ function renderDvgzPaymentRows(payments) {
             ${escapeHtml(payment.orderNumber || '—')}
           </span>
         </span>
-        <span class="dvgz-type">
+        <span class="dvgz-type ${paymentTypeClass}">
           ${escapeHtml(payment.type || '—')}
         </span>
       </div>
