@@ -10,6 +10,7 @@ let RANK_ALIAS = {};
 let MARKS = [];
 let DVGZ_LABELS = {};
 let pendingTwoFactorAuth = null;
+let apiRequestCounter = 0;
 
 const SHARED_AUTH_TOKEN_KEY =
   'tools501_google_id_token';
@@ -52,6 +53,67 @@ function getUsageUserAgent() {
 
 function getDvgzLabel(key) {
   return DVGZ_LABELS[key] || DEFAULT_DVGZ_LABELS[key] || key;
+}
+
+function createApiRequestId() {
+  apiRequestCounter += 1;
+
+  return `${Date.now()}-${apiRequestCounter}`;
+}
+
+function getApiDuration(startedAt) {
+  return Math.round(performance.now() - startedAt);
+}
+
+function logApiRequest(
+  type,
+  {
+    requestId,
+    service,
+    action,
+    method,
+    startedAt,
+    response = null,
+    result = null,
+    error = null
+  }
+) {
+  const isFailed = type === 'failed';
+  const payload = {
+    requestId,
+    service,
+    action,
+    method,
+    durationMs: getApiDuration(startedAt),
+    status: response?.status ?? null,
+    statusText: response?.statusText ?? null,
+    redirected: response?.redirected ?? null,
+    responseType: response?.type ?? null,
+    responseUrl: response?.url ?? null,
+    contentType:
+      response?.headers?.get('content-type') ?? null,
+    apiSuccess:
+      typeof result?.success === 'boolean'
+        ? result.success
+        : result?.error
+          ? false
+          : result
+            ? true
+            : null,
+    apiError: result?.error || null,
+    backendTiming:
+      result?.timing || result?.backendTiming || null,
+    errorName: error?.name || null,
+    errorMessage: error?.message || null,
+    timestamp: new Date().toISOString()
+  };
+
+  const message = isFailed
+    ? '[Book API request failed]'
+    : '[Book API request completed]';
+  const logger = isFailed ? console.error : console.log;
+
+  logger(message, payload);
 }
 
 function getSharedAuthToken() {
@@ -135,6 +197,9 @@ async function handleCredentialResponse(response) {
 }
 
 async function hubApi(action, data = {}, token = authToken) {
+  const requestId = createApiRequestId();
+  const startedAt = performance.now();
+  const method = 'POST';
   const formData = new URLSearchParams();
 
   formData.append(
@@ -154,35 +219,85 @@ async function hubApi(action, data = {}, token = authToken) {
 
   try {
     const response = await fetch(HUB_API_URL, {
-      method: 'POST',
+      method,
       body: formData,
       signal: controller.signal
     });
+    const result = await response.json();
 
-    return response.json();
+    logApiRequest('completed', {
+      requestId,
+      service: 'hub',
+      action,
+      method,
+      startedAt,
+      response,
+      result
+    });
+
+    return result;
+  } catch (error) {
+    logApiRequest('failed', {
+      requestId,
+      service: 'hub',
+      action,
+      method,
+      startedAt,
+      error
+    });
+
+    throw error;
   } finally {
     clearTimeout(timeout);
   }
 }
 
 async function bookApi(action, data = {}, token = authToken) {
-  const response = await fetch(
-    BOOK_API_URL,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'text/plain;charset=utf-8',
-      },
-      body: JSON.stringify({
-        action,
-        token,
-        ...data,
-        userAgent: getUsageUserAgent()
-      })
-    }
-  );
+  const requestId = createApiRequestId();
+  const startedAt = performance.now();
+  const method = 'POST';
 
-  return response.json();
+  try {
+    const response = await fetch(
+      BOOK_API_URL,
+      {
+        method,
+        headers: {
+          'Content-Type': 'text/plain;charset=utf-8',
+        },
+        body: JSON.stringify({
+          action,
+          token,
+          ...data,
+          userAgent: getUsageUserAgent()
+        })
+      }
+    );
+    const result = await response.json();
+
+    logApiRequest('completed', {
+      requestId,
+      service: 'book',
+      action,
+      method,
+      startedAt,
+      response,
+      result
+    });
+
+    return result;
+  } catch (error) {
+    logApiRequest('failed', {
+      requestId,
+      service: 'book',
+      action,
+      method,
+      startedAt,
+      error
+    });
+
+    throw error;
+  }
 }
 
 function showTwoFactorScreen(token, options) {
