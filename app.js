@@ -20,6 +20,7 @@ const BOOK_API_URL =
   'https://script.google.com/macros/s/AKfycbxaGJM3J0JmOBoKe5GwwnKNt4vtuQi5TUn_EVky0KUHlZhq6DoWcIyrc6fQ19JIeElV3w/exec';
 const HUB_URL = '/hub/';
 const HUB_API_TIMEOUT_MS = 20000;
+const ENABLE_TWO_FACTOR_GATE = false;
 
 const DEFAULT_DVGZ_LABELS = {
   button: 'DVGZ',
@@ -441,7 +442,7 @@ async function authenticateWithToken(
   hideTwoFactorScreen();
 
   try {
-    if (!options.skipTwoFactor) {
+    if (ENABLE_TWO_FACTOR_GATE && !options.skipTwoFactor) {
       const canContinue = await ensureTwoFactorAccess(
         token,
         options
