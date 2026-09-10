@@ -1002,6 +1002,12 @@ function getDvgzTypeOption(filter) {
   );
 }
 
+function hasDvgzOrderNumber(value) {
+  return /№\s*\d/.test(
+    String(value || '')
+  );
+}
+
 function isDvgzAllFilter(filter) {
   const selectedOption = getDvgzTypeOption(filter);
 
@@ -1034,7 +1040,7 @@ function renderDvgzPaymentRows(payments) {
   const orderCounts = payments.reduce((acc, payment) => {
     const key = String(payment?.orderNumber || '').trim();
 
-    if (key) {
+    if (key && hasDvgzOrderNumber(key)) {
       acc[key] = (acc[key] || 0) + 1;
     }
 
