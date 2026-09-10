@@ -1565,6 +1565,11 @@ html:not(.dark) .dvgz-scroll:hover::-webkit-scrollbar-thumb{
   border-color:rgba(20,184,166,.24);
 }
 
+html.dark .dvgz-order-duplicate{
+  filter:saturate(1.25) brightness(1.18);
+  box-shadow:0 0 0 1px rgba(255,255,255,.08);
+}
+
 .dvgz-meta-value,
 .dvgz-merged-period{
   color:var(--text);
