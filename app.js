@@ -9,6 +9,7 @@ let RANKS = {};
 let RANK_ALIAS = {};
 let MARKS = [];
 let DVGZ_LABELS = {};
+let SEARCH_FIELDS = [];
 let pendingTwoFactorAuth = null;
 let apiRequestCounter = 0;
 
@@ -48,12 +49,111 @@ const DEFAULT_DVGZ_LABELS = {
   ]
 };
 
+const DEFAULT_SEARCH_FIELDS = [
+  {
+    value: 'pib',
+    label: 'ПІБ',
+    source: 'root',
+    key: 'pib',
+    placeholder: 'Пошук по ПІБ...'
+  }
+];
+
 function getUsageUserAgent() {
   return navigator.userAgent || '';
 }
 
 function getDvgzLabel(key) {
   return DVGZ_LABELS[key] || DEFAULT_DVGZ_LABELS[key] || key;
+}
+
+function getSearchFields() {
+  return SEARCH_FIELDS.length ? SEARCH_FIELDS : DEFAULT_SEARCH_FIELDS;
+}
+
+function getActiveSearchField() {
+  const select = document.getElementById('searchField');
+  const fields = getSearchFields();
+  const value = select && select.value;
+
+  return (
+    fields.find(field => field.value === value) ||
+    fields[0]
+  );
+}
+
+function getSearchFieldValue(item, field) {
+  if (!field) {
+    return '';
+  }
+
+  if (field.source === 'all') {
+    return String(
+      item &&
+      item.all &&
+      item.all[field.key] ||
+      ''
+    );
+  }
+
+  return String(
+    item &&
+    item[field.key] ||
+    ''
+  );
+}
+
+function renderSearchFields() {
+  const select = document.getElementById('searchField');
+  const input = document.getElementById('search');
+
+  if (!select || !input) {
+    return;
+  }
+
+  const fields = getSearchFields();
+
+  select.innerHTML = '';
+
+  fields.forEach(field => {
+    const option = document.createElement('option');
+
+    option.value = field.value;
+    option.textContent = field.label;
+    select.appendChild(option);
+  });
+
+  input.placeholder = fields[0]?.placeholder || 'Пошук...';
+}
+
+function applySearch() {
+  const val = searchInput.value;
+  const field = getActiveSearchField();
+  const lower = val.trim().toLowerCase();
+
+  clearBtn.style.display = val ? 'block' : 'none';
+
+  currentData = lower
+    ? data.filter(item =>
+        getSearchFieldValue(item, field)
+          .toLowerCase()
+          .includes(lower)
+      )
+    : data;
+
+  const el = getSearchCount();
+
+  if (el) {
+    if (val) {
+      el.style.display = 'block';
+      el.innerHTML = `🔍 <b>Знайдено:</b> ${currentData.length}`;
+    } else {
+      el.style.display = 'none';
+    }
+  }
+
+  visibleCount = 30;
+  render(currentData.slice(0, visibleCount));
 }
 
 function createApiRequestId() {
@@ -1724,42 +1824,27 @@ window.addEventListener('scroll', () => {
 });
 
 const searchInput = document.getElementById('search');
+const searchFieldSelect = document.getElementById('searchField');
 const clearBtn = document.getElementById('clearSearch');
 
-searchInput.addEventListener('input', e => {
-  const val = e.target.value;
+searchInput.addEventListener('input', applySearch);
 
-  clearBtn.style.display = val ? 'block' : 'none';
+searchFieldSelect.addEventListener('change', () => {
+  const field = getActiveSearchField();
 
-  const lower = val.toLowerCase();
-
-  currentData = data.filter(item =>
-    (item.pib + item.f12 + item.f13 + item.status)
-      .toLowerCase()
-      .includes(lower)
-  );
-
-  if (val) {
-    const el = getSearchCount();
-
-    if (el) {
-      el.style.display = 'block';
-      el.innerHTML = `🔍 <b>Знайдено:</b> ${currentData.length}`;
-    }
-  } else {
-    const el = getSearchCount();
-    if (el) el.style.display = 'none';
-  }
-
-  visibleCount = 30;
-  render(currentData.slice(0, visibleCount));
+  searchInput.placeholder = field.placeholder || 'Пошук...';
+  applySearch();
 });
 
 clearBtn.addEventListener('click', () => {
   searchInput.value = '';
   clearBtn.style.display = 'none';
 
-  getSearchCount().style.display = 'none';
+  const el = getSearchCount();
+
+  if (el) {
+    el.style.display = 'none';
+  }
 
   currentData = data;
   visibleCount = 30;
@@ -1891,10 +1976,14 @@ async function loadData(
     FIELD_LABELS = result.meta?.fields || {};
     FIELD_ORDER = result.meta?.order || [];
     MARKS = result.meta?.marks || [];
+    SEARCH_FIELDS =
+      result.meta?.searchFields || DEFAULT_SEARCH_FIELDS;
     DVGZ_LABELS =
       result.meta?.uiLabels?.dvgz || DEFAULT_DVGZ_LABELS;
     RANKS = result.assets?.ranks || {};
     RANK_ALIAS = result.assets?.rankAlias || {};
+
+    renderSearchFields();
 
     const CHEVRON = result.assets?.chevron || '';
 
