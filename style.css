@@ -332,25 +332,53 @@ html, body {
 }
   
 .search-wrapper {
-  position: relative;
   padding: 10px;
 }
 
-#search {
-  width: 100%;
-  padding: 10px 35px 10px 10px;
-  font-size: 16px;
-  border-radius: 8px;
-  border: 1px solid #ddd;
-  box-sizing: border-box;
+.search-control{
+  position:relative;
+  display:flex;
+  align-items:center;
+  width:100%;
+  border:1px solid var(--input-border);
+  border-radius:8px;
   background:var(--input-bg);
-  border-color:var(--input-border);
+  box-sizing:border-box;
+  overflow:hidden;
+}
+
+#searchField{
+  flex:0 0 auto;
+  max-width:125px;
+  min-width:86px;
+  height:42px;
+  padding:0 24px 0 10px;
+  border:0;
+  border-right:1px solid var(--input-border);
+  background:var(--input-bg);
   color:var(--text);
+  font-size:14px;
+  font-weight:700;
+  outline:none;
+  cursor:pointer;
+}
+
+#search {
+  flex:1 1 auto;
+  min-width:0;
+  width:100%;
+  padding:10px 35px 10px 10px;
+  font-size: 16px;
+  border:0;
+  box-sizing: border-box;
+  background:transparent;
+  color:var(--text);
+  outline:none;
 }
 
 #clearSearch {
   position: absolute;
-  right: 20px;
+  right: 10px;
   top: 50%;
   transform: translateY(-50%);
   font-size: 14px;
@@ -361,6 +389,10 @@ html, body {
 
 #clearSearch:hover {
   color: #000;
+}
+
+html.dark #clearSearch:hover{
+  color:#f3f4f6;
 }
 
 .details.open {
