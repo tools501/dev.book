@@ -1652,6 +1652,29 @@ async function switchDetailsContent(details, html) {
   });
 }
 
+function scrollToSearchMatch(details) {
+  const input = document.getElementById('search');
+
+  if (!input || !input.value.trim()) {
+    return;
+  }
+
+  window.setTimeout(() => {
+    const match = details.querySelector(
+      '.detail-search-value-match'
+    );
+
+    if (!match) {
+      return;
+    }
+
+    match.scrollIntoView({
+      behavior: 'smooth',
+      block: 'center'
+    });
+  }, 220);
+}
+
 function toggle(btn, mode = 'details') {
 
   const card = btn.closest('.card');
@@ -1701,6 +1724,7 @@ function toggle(btn, mode = 'details') {
     );
 
     details.dataset.mode = 'details';
+    scrollToSearchMatch(details);
 
     return;
   }
