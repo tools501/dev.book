@@ -1668,11 +1668,13 @@ function scrollToSearchMatch(details) {
       return;
     }
 
-    match.scrollIntoView({
+    const target = match.closest('.detail-row') || match;
+
+    target.scrollIntoView({
       behavior: 'smooth',
       block: 'center'
     });
-  }, 220);
+  }, 460);
 }
 
 function toggle(btn, mode = 'details') {
