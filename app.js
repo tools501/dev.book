@@ -1135,16 +1135,9 @@ function buildDetailsHTML(item) {
 
     const displayKey = (FIELD_LABELS[k] || k).replace(/\r?\n/g, ' ');
 
-    const keyClasses = [
-      'detail-key',
-      isActiveSearchDetailsKey(k)
-        ? 'detail-key-search-match'
-        : ''
-    ].filter(Boolean).join(' ');
-
     const keyHTML = k === 'ТВО'
-      ? `<span class="${keyClasses}" style="color:#2ecc71; font-weight:bold;">${displayKey}</span>`
-      : `<span class="${keyClasses}">${displayKey}</span>`;
+      ? `<span class="detail-key" style="color:#2ecc71; font-weight:bold;">${displayKey}</span>`
+      : `<span class="detail-key">${displayKey}</span>`;
 
     return `
       <div class="detail-row">
