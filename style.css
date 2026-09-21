@@ -348,20 +348,6 @@ html, body {
   overflow:visible;
 }
 
-.search-control::after{
-  content:'';
-  position:absolute;
-  left:100px;
-  top:50%;
-  width:6px;
-  height:6px;
-  border-right:2px solid var(--text-soft);
-  border-bottom:2px solid var(--text-soft);
-  transform:translateY(-65%) rotate(45deg);
-  pointer-events:none;
-  opacity:.9;
-}
-
 #searchField{
   flex:0 0 auto;
   max-width:128px;
@@ -371,7 +357,11 @@ html, body {
   padding:0 24px 0 10px;
   border:0;
   border-radius:7px;
-  background:rgba(148, 163, 184, .12);
+  background-color:rgba(148, 163, 184, .12);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='none' stroke='%2394a3b8' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round' d='M1 1l4 4 4-4'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:right 8px center;
+  background-size:10px 6px;
   color:var(--text);
   font-size:14px;
   font-weight:700;
@@ -384,16 +374,16 @@ html, body {
 
 #searchField:hover,
 #searchField:focus{
-  background:rgba(148, 163, 184, .18);
+  background-color:rgba(148, 163, 184, .18);
 }
 
 html.dark #searchField{
-  background:rgba(51, 65, 85, .55);
+  background-color:rgba(51, 65, 85, .55);
 }
 
 html.dark #searchField:hover,
 html.dark #searchField:focus{
-  background:rgba(51, 65, 85, .8);
+  background-color:rgba(51, 65, 85, .8);
 }
 
 #search {
