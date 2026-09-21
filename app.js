@@ -870,6 +870,104 @@ function highlightSZCH(text) {
   });
 }
 
+function getSzchHighlightRanges(text) {
+  const ranges = [];
+  const regex =
+    /(^|[^а-яіїєґa-z])(сзч)(?=[^а-яіїєґa-z]|$)/gi;
+  let match;
+
+  while ((match = regex.exec(text)) !== null) {
+    const start = match.index + match[1].length;
+
+    ranges.push({
+      start,
+      end: start + match[2].length,
+      className: 'detail-szch-match'
+    });
+  }
+
+  return ranges;
+}
+
+function getSearchHighlightRanges(text, key) {
+  if (!isActiveSearchDetailsKey(key)) {
+    return [];
+  }
+
+  const input = document.getElementById('search');
+  const query = String(input?.value || '').trim();
+
+  if (!query) {
+    return [];
+  }
+
+  const ranges = [];
+  const source = text.toLowerCase();
+  const needle = query.toLowerCase();
+  let index = source.indexOf(needle);
+
+  while (index !== -1) {
+    ranges.push({
+      start: index,
+      end: index + needle.length,
+      className: 'detail-search-value-match'
+    });
+
+    index = source.indexOf(needle, index + needle.length);
+  }
+
+  return ranges;
+}
+
+function renderDetailValue(rawValue, key) {
+  const text = String(rawValue ?? '');
+  const ranges = [
+    ...getSzchHighlightRanges(text),
+    ...getSearchHighlightRanges(text, key)
+  ];
+
+  if (!ranges.length) {
+    return escapeHtml(text).replace(/\r?\n/g, '<br>');
+  }
+
+  const points = new Set([0, text.length]);
+
+  ranges.forEach(range => {
+    points.add(range.start);
+    points.add(range.end);
+  });
+
+  const sortedPoints = Array.from(points)
+    .sort((a, b) => a - b);
+  const html = [];
+
+  for (let i = 0; i < sortedPoints.length - 1; i++) {
+    const start = sortedPoints[i];
+    const end = sortedPoints[i + 1];
+    const chunk = text.slice(start, end);
+
+    if (!chunk) {
+      continue;
+    }
+
+    const classNames = ranges
+      .filter(range => range.start < end && range.end > start)
+      .map(range => range.className);
+    const safeChunk = escapeHtml(chunk).replace(/\r?\n/g, '<br>');
+
+    if (classNames.length) {
+      html.push(
+        `<span class="${[...new Set(classNames)].join(' ')}">` +
+        `${safeChunk}</span>`
+      );
+    } else {
+      html.push(safeChunk);
+    }
+  }
+
+  return html.join('');
+}
+
 function copyText(text) {
   navigator.clipboard.writeText(text);
   showToast('Скопійовано');
@@ -1026,11 +1124,14 @@ function buildDetailsHTML(item) {
 
   return finalKeys.map(k => {
     const rawValue = data[k];
-    let v = highlightSZCH(rawValue);
     
-    if (v === null || v === undefined || v === '') return '';
+    if (
+      rawValue === null ||
+      rawValue === undefined ||
+      rawValue === ''
+    ) return '';
     
-    v = String(v).replace(/\r?\n/g, '<br>');
+    const v = renderDetailValue(rawValue, k);
 
     const displayKey = (FIELD_LABELS[k] || k).replace(/\r?\n/g, ' ');
 
