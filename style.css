@@ -348,10 +348,24 @@ html, body {
   overflow:visible;
 }
 
+.search-control::after{
+  content:'';
+  position:absolute;
+  left:100px;
+  top:50%;
+  width:6px;
+  height:6px;
+  border-right:2px solid var(--text-soft);
+  border-bottom:2px solid var(--text-soft);
+  transform:translateY(-65%) rotate(45deg);
+  pointer-events:none;
+  opacity:.9;
+}
+
 #searchField{
   flex:0 0 auto;
-  max-width:118px;
-  min-width:78px;
+  max-width:128px;
+  min-width:98px;
   height:32px;
   margin-left:4px;
   padding:0 24px 0 10px;
@@ -363,6 +377,9 @@ html, body {
   font-weight:700;
   outline:none;
   cursor:pointer;
+  appearance:none;
+  -webkit-appearance:none;
+  -moz-appearance:none;
 }
 
 #searchField:hover,
