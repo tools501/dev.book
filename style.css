@@ -105,6 +105,16 @@ html.dark .detail-key-search-match{
   box-shadow:inset 0 0 0 1px rgba(245, 158, 11, .28);
 }
 
+html.dark .detail-search-value-match{
+  color:#fef3c7;
+  background:rgba(245, 158, 11, .24);
+  box-shadow:inset 0 -1px 0 rgba(245, 158, 11, .38);
+}
+
+html.dark .detail-szch-match{
+  color:#ff6b6b;
+}
+
 html.dark .toggle-btn{
   background:#24324d;
   color:#f8fafc;
@@ -480,6 +490,20 @@ html.dark #clearSearch:hover{
   justify-content: space-between;
   align-items: center;
   margin-top: 4px;
+}
+
+.detail-search-value-match{
+  padding:0 2px;
+  border-radius:4px;
+  color:#78350f;
+  background:rgba(245, 158, 11, .26);
+  box-shadow:inset 0 -1px 0 rgba(245, 158, 11, .35);
+  font-weight:700;
+}
+
+.detail-szch-match{
+  color:red;
+  font-weight:bold;
 }
 
 .copy-btn {
