@@ -103,6 +103,22 @@ function getSearchFieldValue(item, field) {
   );
 }
 
+function isActiveSearchDetailsKey(key) {
+  const input = document.getElementById('search');
+
+  if (!input || !input.value.trim()) {
+    return false;
+  }
+
+  const field = getActiveSearchField();
+
+  return Boolean(
+    field &&
+    field.detailsKey &&
+    field.detailsKey === key
+  );
+}
+
 function renderSearchFields() {
   const select = document.getElementById('searchField');
   const input = document.getElementById('search');
@@ -1018,9 +1034,16 @@ function buildDetailsHTML(item) {
 
     const displayKey = (FIELD_LABELS[k] || k).replace(/\r?\n/g, ' ');
 
+    const keyClasses = [
+      'detail-key',
+      isActiveSearchDetailsKey(k)
+        ? 'detail-key-search-match'
+        : ''
+    ].filter(Boolean).join(' ');
+
     const keyHTML = k === 'ТВО'
-      ? `<span class="detail-key" style="color:#2ecc71; font-weight:bold;">${displayKey}</span>`
-      : `<span class="detail-key">${displayKey}</span>`;
+      ? `<span class="${keyClasses}" style="color:#2ecc71; font-weight:bold;">${displayKey}</span>`
+      : `<span class="${keyClasses}">${displayKey}</span>`;
 
     return `
       <div class="detail-row">
