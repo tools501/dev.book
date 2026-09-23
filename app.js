@@ -9,6 +9,7 @@ let RANKS = {};
 let RANK_ALIAS = {};
 let MARKS = [];
 let DVGZ_LABELS = {};
+let SOCIAL_LABELS = {};
 let SEARCH_FIELDS = [];
 let pendingTwoFactorAuth = null;
 let apiRequestCounter = 0;
@@ -22,6 +23,7 @@ const BOOK_API_URL =
 const HUB_URL = '/hub/';
 const HUB_API_TIMEOUT_MS = 20000;
 const ENABLE_TWO_FACTOR_GATE = false;
+const SHOW_SOCIAL_DATA_BUTTON = false;
 
 const DEFAULT_DVGZ_LABELS = {
   button: 'DVGZ',
@@ -49,6 +51,11 @@ const DEFAULT_DVGZ_LABELS = {
   ]
 };
 
+const DEFAULT_SOCIAL_LABELS = {
+  button: 'Data',
+  empty: 'No data'
+};
+
 const DEFAULT_SEARCH_FIELDS = [
   {
     value: 'pib',
@@ -65,6 +72,10 @@ function getUsageUserAgent() {
 
 function getDvgzLabel(key) {
   return DVGZ_LABELS[key] || DEFAULT_DVGZ_LABELS[key] || key;
+}
+
+function getSocialLabel(key) {
+  return SOCIAL_LABELS[key] || DEFAULT_SOCIAL_LABELS[key] || key;
 }
 
 function getSearchFields() {
@@ -1087,9 +1098,15 @@ function render(items, append = false) {
           📄 Стройові${item.ordersLoaded ? ` (${item.orders.length})` : ''}
         </button>
 
-        <button class="action-btn social-btn" onclick="toggle(this, 'social')">
-          🗂️ Соц. дані
-        </button>
+        ${
+          SHOW_SOCIAL_DATA_BUTTON
+            ? `
+              <button class="action-btn social-btn" onclick="toggle(this, 'social')">
+                🗂️ ${escapeHtml(getSocialLabel('button'))}
+              </button>
+            `
+            : ''
+        }
 
         <button class="action-btn dvgz-btn" onclick="toggle(this, 'dvgz')">
           ◈ ${getDvgzLabel('button')}
@@ -1245,7 +1262,7 @@ function renderSocialHTML(social) {
   if (!social?.found) {
     return `
       <div class="orders-empty">
-        🗂️ Соціальні дані відсутні
+        🗂️ ${escapeHtml(getSocialLabel('empty'))}
       </div>
     `;
   }
@@ -2121,6 +2138,8 @@ async function loadData(
     MARKS = result.meta?.marks || [];
     SEARCH_FIELDS =
       result.meta?.searchFields || DEFAULT_SEARCH_FIELDS;
+    SOCIAL_LABELS =
+      result.meta?.uiLabels?.social || DEFAULT_SOCIAL_LABELS;
     DVGZ_LABELS =
       result.meta?.uiLabels?.dvgz || DEFAULT_DVGZ_LABELS;
     RANKS = result.assets?.ranks || {};
