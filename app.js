@@ -2372,7 +2372,7 @@ function showSessionModal() {
   confirmBtn.onclick = () => {
     authToken = '';
     clearSharedAuthToken();
-    window.location.href = HUB_URL;
+    window.location.reload();
   };
 
   cancelBtn.onclick = () => {
