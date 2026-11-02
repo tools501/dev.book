@@ -1,8 +1,14 @@
 <!DOCTYPE html>
-<html lang="uk">
+<html lang="uk" style="display:none !important">
   
 <head>
   <meta charset="UTF-8">
+  <!-- Fail closed in frames, including sandboxes where scripts cannot run. -->
+  <script>
+    if (window.self === window.top) {
+      document.documentElement.style.removeProperty('display');
+    }
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f4f7fb">
   <meta name="application-name" content="Book">
@@ -18,14 +24,13 @@
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 
   <script>
-    if (localStorage.getItem('theme') === 'dark') {
+    if (window.self === window.top && localStorage.getItem('theme') === 'dark') {
       document.documentElement.classList.add('dark');
     }
   </script>
 
   <link rel="stylesheet" href="style.css">
 
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 
 <body>
@@ -232,6 +237,22 @@
   </div>
 </div>
 
-<script src="app.js"></script>
+<script>
+  (function () {
+    // Do not boot the application or Google sign-in inside any frame.
+    if (window.self !== window.top) return;
+
+    const appScript = document.createElement('script');
+    appScript.src = 'app.js';
+    appScript.onload = function () {
+      // The credential callback must exist before Google initializes its button.
+      const googleScript = document.createElement('script');
+      googleScript.src = 'https://accounts.google.com/gsi/client';
+      googleScript.async = true;
+      document.head.appendChild(googleScript);
+    };
+    document.body.appendChild(appScript);
+  })();
+</script>
 </body>
 </html>
