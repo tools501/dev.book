@@ -689,6 +689,26 @@ function renderMarksChart(counts) {
     .join('');
 }
 
+function searchBirthdayPerson(pib) {
+  const name = String(pib || '').trim();
+  const field = getSearchFields().find(item => item.source === 'root' && item.key === 'pib');
+
+  if (!name || !field) return;
+
+  searchFieldSelect.value = field.value;
+  searchInput.placeholder = field.placeholder || 'Пошук по ПІБ...';
+  searchInput.value = name;
+  applySearch();
+
+  // Bring the search/results into view without opening the mobile keyboard.
+  searchInput.closest('.search-wrapper')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function renderBirthdayName(person) {
+  const name = escapeHtml(person.pib);
+  return `<button type="button" class="birthday-search" data-pib="${name}" title="Знайти за ПІБ">${name}</button>`;
+}
+
 function renderBirthdays(items) {
   const container = document.getElementById('birthdaysBlock');
 
@@ -719,7 +739,7 @@ function renderBirthdays(items) {
              style="${i >= 3 ? 'display:none;' : ''}">
           <span class="today-dot"></span>
           <span>
-            ${p.pib}
+            ${renderBirthdayName(p)}
             ${p.age ? `<span class="age-badge">(${p.age})</span>` : ""}
           </span>
         </div>
@@ -789,7 +809,7 @@ function renderBirthdays(items) {
               </div>
               ${list.map(p => `
                 <div class="bd-name ui-item">
-                  ${p.pib}
+                  ${renderBirthdayName(p)}
                   ${p.age ? `<span class="age-badge">(${p.age})</span>` : ""}
                 </div>
               `).join('')}
@@ -1986,6 +2006,11 @@ window.addEventListener('scroll', () => {
 const searchInput = document.getElementById('search');
 const searchFieldSelect = document.getElementById('searchField');
 const clearBtn = document.getElementById('clearSearch');
+
+document.getElementById('birthdaysBlock').addEventListener('click', event => {
+  const button = event.target.closest('.birthday-search');
+  if (button) searchBirthdayPerson(button.dataset.pib);
+});
 
 searchInput.addEventListener('input', applySearch);
 
