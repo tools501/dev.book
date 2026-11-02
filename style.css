@@ -811,6 +811,30 @@ button {
   border-radius: 4px;
 }
 
+.birthday-search {
+  appearance: none;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 3px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  line-height: inherit;
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+
+.birthday-search:hover {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.birthday-search:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
 .bd-date {
   font-weight: 700;             
   font-size: 12px;
