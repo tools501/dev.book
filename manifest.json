@@ -1,12 +1,11 @@
 {
-  "id": "/dev.book/",
-  "name": "Dev.Book",
-  "short_name": "Dev.Book",
+  "id": "/book/",
+  "name": "Book",
+  "short_name": "Book",
   "description": "Book internal app",
-  "start_url": "/dev.book/",
-  "scope": "/dev.book/",
+  "start_url": "/book/",
+  "scope": "/book/",
   "display": "standalone",
-  "orientation": "portrait",
   "background_color": "#f4f7fb",
   "theme_color": "#f4f7fb",
   "icons": [
